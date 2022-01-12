@@ -44,4 +44,13 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         );
         return response.getBody();
     }
+
+    @Override
+    public UserDto findUserByEmailAddress(String emailAddress) {
+        ResponseEntity<UserDto> response = restTemplate.getForEntity(
+                "http://USER-SERVICE/api/users/by-email/" + emailAddress,
+                UserDto.class
+        );
+        return response.getBody();
+    }
 }

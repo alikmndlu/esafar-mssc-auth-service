@@ -9,4 +9,6 @@ public interface AuthenticateService {
     boolean checkUserExistence(String emailAddress, String password) throws JsonProcessingException;
 
     UserDto registerNewUser(RegisterCredentialsDto registerDto);
+
+    UserDto findUserByEmailAddress(String emailAddress);
 }

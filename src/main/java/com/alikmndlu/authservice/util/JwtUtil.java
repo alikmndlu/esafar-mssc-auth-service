@@ -1,14 +1,18 @@
 package com.alikmndlu.authservice.util;
 
+import com.alikmndlu.authservice.dto.UserDto;
 import com.alikmndlu.authservice.exception.JwtTokenMalformedException;
 import com.alikmndlu.authservice.exception.JwtTokenMissingException;
+import com.alikmndlu.authservice.service.AuthenticateService;
 import io.jsonwebtoken.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
 
 	@Value("${jwt.secret}")
@@ -16,6 +20,8 @@ public class JwtUtil {
 
 	@Value("${jwt.token.validity}")
 	private long tokenValidity;
+
+	private final AuthenticateService authenticateService;
 
 	public Claims getClaims(final String token) {
 		try {
@@ -26,13 +32,14 @@ public class JwtUtil {
 		return null;
 	}
 
-	public String generateToken(String username) {
-		Claims claims = Jwts.claims().setSubject(username);
+	public String generateToken(String emailAddress) {
+		UserDto user = authenticateService.findUserByEmailAddress(emailAddress);
 		long nowMillis = System.currentTimeMillis();
 		long expMillis = nowMillis + tokenValidity;
 		Date exp = new Date(expMillis);
 		return Jwts.builder()
-				.setClaims(claims)
+				.setSubject(emailAddress)
+				.claim("userId", user.getId())
 				.setIssuedAt(new Date(nowMillis))
 				.setExpiration(exp)
 				.signWith(SignatureAlgorithm.HS512, jwtSecret)
