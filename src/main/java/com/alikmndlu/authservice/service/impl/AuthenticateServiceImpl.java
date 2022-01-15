@@ -3,10 +3,15 @@ package com.alikmndlu.authservice.service.impl;
 import com.alikmndlu.authservice.dto.RegisterCredentialsDto;
 import com.alikmndlu.authservice.dto.UserDto;
 import com.alikmndlu.authservice.service.AuthenticateService;
+import com.alikmndlu.authservice.util.StaticUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
@@ -23,7 +28,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                 "http://USER-SERVICE/api/users/check-existence",
                 Map.of(
                         "emailAddress", emailAddress,
-                        "password", password
+                        "password", StaticUtils.md5Encrypt(password)
                 ),
                 Boolean.class
         );
