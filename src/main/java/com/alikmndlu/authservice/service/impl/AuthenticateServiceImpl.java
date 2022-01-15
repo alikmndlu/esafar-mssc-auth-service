@@ -28,7 +28,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                 "http://USER-SERVICE/api/users/check-existence",
                 Map.of(
                         "emailAddress", emailAddress,
-                        "password", StaticUtils.md5Encrypt(password)
+                        "password", password
                 ),
                 Boolean.class
         );

@@ -29,7 +29,9 @@ public class AuthRestController {
 
 	@PostMapping("/login")
 	public ResponseEntity<Map<String, String>> login(@RequestBody LoginCredentialsDto loginDto) throws JsonProcessingException {
+		System.out.println("Dto : " + loginDto.getPassword());
 		boolean isUsersExistence = authenticateService.checkUserExistence(loginDto.getEmailAddress(), loginDto.getPassword());
+		System.out.println("User Found ? " + isUsersExistence);
 		log.info("Login API {EmailAddress: {}, Password: {}, Result: {}}", loginDto.getEmailAddress(), loginDto.getPassword(), isUsersExistence);
 		return isUsersExistence ?
 				ResponseEntity.ok().body(Map.of("token", jwtUtil.generateToken(loginDto.getEmailAddress()))) :
