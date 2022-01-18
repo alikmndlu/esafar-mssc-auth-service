@@ -27,10 +27,12 @@ public class AuthRestController {
 
 	private final AuthenticateService authenticateService;
 
+
 	@PostMapping("/login")
 	public ResponseEntity<Map<String, String>> login(@RequestBody LoginCredentialsDto loginDto) throws JsonProcessingException {
+		log.info("Login API Called {EmailAddress: {}, Password: {}}", loginDto.getEmailAddress(), loginDto.getPassword());
 		boolean isUsersExistence = authenticateService.checkUserExistence(loginDto.getEmailAddress(), loginDto.getPassword());
-		log.info("Login API {EmailAddress: {}, Password: {}, Result: {}}", loginDto.getEmailAddress(), loginDto.getPassword(), isUsersExistence);
+		log.info("Login Status {{}}", isUsersExistence);
 		return isUsersExistence ?
 				ResponseEntity.ok().body(Map.of("token", jwtUtil.generateToken(loginDto.getEmailAddress()))) :
 				ResponseEntity.notFound().build();
@@ -38,9 +40,8 @@ public class AuthRestController {
 
 	@PostMapping("/register")
 	public ResponseEntity<UserDto> register(@RequestBody RegisterCredentialsDto registerDto) {
-		log.info("Register API {Name: {}, EmailAddress: {}, Password: {}}", registerDto.getName(), registerDto.getEmailAddress(), registerDto.getPassword());
+		log.info("Register API Called {Name: {}, EmailAddress: {}, Password: {}}", registerDto.getName(), registerDto.getEmailAddress(), registerDto.getPassword());
 		UserDto createdUser = authenticateService.registerNewUser(registerDto);
 		return ResponseEntity.created(URI.create("/api/users/" + createdUser.getId())).body(createdUser);
 	}
-
 }

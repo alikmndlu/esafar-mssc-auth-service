@@ -34,12 +34,12 @@ public class JwtUtil {
 
 	public String generateToken(String emailAddress) {
 		UserDto user = authenticateService.findUserByEmailAddress(emailAddress);
+		System.out.println(user.getId());
 		long nowMillis = System.currentTimeMillis();
 		long expMillis = nowMillis + tokenValidity;
 		Date exp = new Date(expMillis);
 		return Jwts.builder()
-				.setSubject(emailAddress)
-				.claim("userId", user.getId())
+				.setSubject(user.getId())
 				.setIssuedAt(new Date(nowMillis))
 				.setExpiration(exp)
 				.signWith(SignatureAlgorithm.HS512, jwtSecret)
